@@ -4,9 +4,6 @@ import { useSelector } from 'react-redux';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import remarkGfm from 'remark-gfm';
-import remarkMath from 'remark-math';
-import rehypeKatex from 'rehype-katex';
-import 'katex/dist/katex.min.css';
 
 import Alert from '../assets/alert.svg';
 import DocsGPT3 from '../assets/cute_docsgpt3.svg';
@@ -65,21 +62,6 @@ const ConversationBubble = forwardRef<
       </div>
     );
   } else {
-    const preprocessLaTeX = (content: string) => {
-      // Replace block-level LaTeX delimiters \[ \] with $$ $$
-      const blockProcessedContent = content.replace(
-        /\\\[(.*?)\\\]/gs,
-        (_, equation) => `$$${equation}$$`,
-      );
-
-      // Replace inline LaTeX delimiters \( \) with $ $
-      const inlineProcessedContent = blockProcessedContent.replace(
-        /\\\((.*?)\\\)/gs,
-        (_, equation) => `$${equation}$`,
-      );
-
-      return inlineProcessedContent;
-    };
     bubble = (
       <div
         ref={ref}
@@ -243,8 +225,7 @@ const ConversationBubble = forwardRef<
             )}
             <ReactMarkdown
               className="whitespace-pre-wrap break-normal leading-normal"
-              remarkPlugins={[remarkGfm, remarkMath]}
-              rehypePlugins={[rehypeKatex]}
+              remarkPlugins={[remarkGfm]}
               components={{
                 code(props) {
                   const { children, className, node, ref, ...rest } = props;
@@ -327,7 +308,7 @@ const ConversationBubble = forwardRef<
                 },
               }}
             >
-              {preprocessLaTeX(message)}
+              {message}
             </ReactMarkdown>
           </div>
         </div>
